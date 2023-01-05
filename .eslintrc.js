@@ -1,7 +1,7 @@
 const { defineConfig } = require("eslint-define-config");
 
 module.exports = defineConfig({
-  extends: ["airbnb-base", "plugin:prettier/recommended"],
+  extends: ["airbnb-base"],
   rules: {
     // 双引号
     quotes: ["error", "double"],

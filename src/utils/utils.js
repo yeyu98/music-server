@@ -5,6 +5,8 @@ const axiosInstance = new Axios({
   timeout: "30000",
 });
 
+const request = {};
+
 axiosInstance.interceptors.request.use((config) => {
   const configHeaders = config.headers;
   const headers = {
@@ -17,12 +19,10 @@ axiosInstance.interceptors.request.use((config) => {
     headers.Origin = action.refererValue;
   }
 
-
   config.headers = {
     ...config.headers,
     ...headers,
   };
-
 
   return config;
 }, (error) => Promise.reject(error));
@@ -33,3 +33,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => Promise.reject(error),
 );
+
+
+request.get = (url, options) => axiosInstance.get(url, options).then((res) => res);
+
+request.post = (url, data, options) => axiosInstance.post(url, data, options).then((res) => res);

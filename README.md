@@ -7,3 +7,5 @@
 
 # koa
 为什么请求/时会自动再请求一次/favicon.ico?
+
+node中使用axios请求html文件时报错unexpected end of file 需要检查Accept-Encoding 是否与请求保持一致 (目前是通过设置为 * 解决的)

@@ -1,9 +1,10 @@
-const Koa = require("koa")
-const app = new Koa()
-const router = require("./router/index")
+const Koa = require("koa");
 
-app.use(router.routes())
-app.use(router.allowedMethods())
+const app = new Koa();
+const router = require("./router/index");
 
-app.listen(30000)
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+app.listen(30000);
 

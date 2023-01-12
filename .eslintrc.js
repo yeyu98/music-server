@@ -13,6 +13,8 @@ module.exports = defineConfig({
     // 确保导入指向可以解析的文件/模块
     "import/no-unresolved": "off",
     "no-console": "off",
+    "no-underscore-dangle": "off",
+    "no-param-reassign": "off",
     // 设置import可以导入devDependencies中的包
     "import/no-extraneous-dependencies": [
       "error",

@@ -1,40 +1,15 @@
-import { Axios } from "axios";
-import hackHeader from "./hackHeader";
+function getParameterByName(name, url) {
+  // 从url上取某个参数的值
+  // if (!url) url = window.location.href;
+  const replacedName = name.replace(/[[\]]/g, "\\$&");
+  const regex = new RegExp(`[?&]${replacedName}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
 
-const axiosInstance = new Axios({
-  timeout: "30000",
-});
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
-const request = {};
-
-axiosInstance.interceptors.request.use((config) => {
-  const configHeaders = config.headers;
-  const headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
-  };
-  const action = hackHeader(config.url);
-  headers.Referer = action.refererValue;
-
-  if (action.isAddOrigin || (action.isReplaceOrigin && configHeaders.Origin === undefined)) {
-    headers.Origin = action.refererValue;
-  }
-
-  config.headers = {
-    ...config.headers,
-    ...headers,
-  };
-
-  return config;
-}, (error) => Promise.reject(error));
-axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log(response);
-    return response;
-  },
-  (error) => Promise.reject(error),
-);
-
-
-request.get = (url, options) => axiosInstance.get(url, options).then((res) => res);
-
-request.post = (url, data, options) => axiosInstance.post(url, data, options).then((res) => res);
+module.exports = {
+  getParameterByName,
+};

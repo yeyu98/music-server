@@ -15,6 +15,8 @@ module.exports = defineConfig({
     "no-console": "off",
     "no-underscore-dangle": "off",
     "no-param-reassign": "off",
+    // 禁止匿名函数
+    "func-names": "off",
     // 设置import可以导入devDependencies中的包
     "import/no-extraneous-dependencies": [
       "error",

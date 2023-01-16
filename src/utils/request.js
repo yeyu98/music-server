@@ -10,19 +10,25 @@ const request = {};
 axiosInstance.interceptors.request.use((config) => {
   const configHeaders = config.headers;
   const headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
+    "Accept-Encoding": "*",
+    "user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
   };
   const action = hackHeader(config.url);
-  headers.Referer = action.refererValue;
+
+  console.log(action);
+  console.log(config);
+  headers.referer = action.refererValue;
 
   if (action.isAddOrigin || (action.isReplaceOrigin && configHeaders.Origin === undefined)) {
-    headers.Origin = action.refererValue;
+    headers.origin = action.refererValue;
   }
 
   config.headers = {
     ...config.headers,
     ...headers,
   };
+
+  console.log(config);
 
   return config;
 }, (error) => Promise.reject(error));

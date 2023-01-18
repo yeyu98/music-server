@@ -1,10 +1,16 @@
-/* eslint-disable import/named */
-/* eslint-disable no-undef */
-/* eslint-disable no-param-reassign */
-import aesjs from './aes';
-import { MD5 } from './md5';
+/*
+ * @Author: lzy-Jerry
+ * @Date: 2023-01-18 09:35:15
+ * @LastEditors: lzy-Jerry
+ * @LastEditTime: 2023-01-18 10:04:11
+ * @FilePath: \music\music-server\src\crypto\crypto.js
+ * @Description:
+ */
 
-const bigInt = require('./big-integer');
+const aesjs = require("./aes");
+const { MD5 } = require("./md5");
+
+const bigInt = require("./big-integer");
 
 function aesEncrypt(text, secKey, ivString) {
   const pad = 16 - (text.length % 16);
@@ -23,7 +29,7 @@ function aesEncrypt(text, secKey, ivString) {
     Array.prototype.push.apply(cipherArray, block);
     textBytes = textBytes.slice(16);
   }
-  let ciphertext = '';
+  let ciphertext = "";
   for (let i = 0; i < cipherArray.length; i += 1) {
     ciphertext += String.fromCharCode(cipherArray[i]);
   }
@@ -32,7 +38,7 @@ function aesEncrypt(text, secKey, ivString) {
 }
 
 function hexify(text) {
-  return text.split('').map(x => x.charCodeAt(0).toString(16)).join('');
+  return text.split("").map((x) => x.charCodeAt(0).toString(16)).join("");
 }
 
 function zfill(num, size) {
@@ -55,7 +61,7 @@ function expmod(base, exp, mymod) {
 }
 
 function rsaEncrypt(text, pubKey, modulus) {
-  const reversedText = text.split('').reverse().join('');
+  const reversedText = text.split("").reverse().join("");
   const base = bigInt(hexify(reversedText), 16);
   const exp = bigInt(pubKey, 16);
   const mod = bigInt(modulus, 16);
@@ -64,4 +70,4 @@ function rsaEncrypt(text, pubKey, modulus) {
   return zfill(rs, 256).toLowerCase();
 }
 
-export default { aesEncrypt, rsaEncrypt, MD5 };
+module.exports = { aesEncrypt, rsaEncrypt, MD5 };

@@ -1,6 +1,17 @@
+/*
+ * @Author: lzy-Jerry
+ * @Date: 2023-01-05 22:52:33
+ * @LastEditors: lzy-Jerry
+ * @LastEditTime: 2023-01-18 10:43:23
+ * @FilePath: \music\music-server\.eslintrc.js
+ * @Description: eslint 配置
+ */
 const { defineConfig } = require("eslint-define-config");
 
 module.exports = defineConfig({
+  parserOptions: {
+    ecmaVersion: 2020,
+  },
   extends: ["airbnb-base"],
   rules: {
     // 双引号

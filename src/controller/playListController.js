@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-25 19:46:20
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-18 10:44:15
+ * @LastEditTime: 2023-01-18 11:25:46
  * @FilePath: \music\music-server\src\controller\playListController.js
  * @Description: 歌单列表查询
  */
@@ -13,6 +13,7 @@ const { getParameterByName } = require("../utils/utils");
 /**
  * 歌单查询接口
  * 支持查询顺序${order}、分页${offset}、分类${cat}
+ * 目前所有从接口返回的data都需要通过parse解析，除了网易云..
 */
 
 const getNeteasePlayList = async (ctx) => {
@@ -20,8 +21,7 @@ const getNeteasePlayList = async (ctx) => {
   const baseUrl = `http://music.163.com/discover/playlist/?order=${order}&cat=${cat}`;
   const targetUrl = offset ? `${baseUrl}&limit=35&offset=${offset}` : baseUrl;
 
-  const response = await request.get(targetUrl);
-  const { data } = response;
+  const data = await request.get(targetUrl);
   const $ = cheerio.load(data);
   const playList = [];
 
@@ -48,8 +48,7 @@ const getNeteasePlayList = async (ctx) => {
 const getQQPlayList = async (ctx) => {
   const { offset = 0 } = ctx.query;
   const targetUrl = `https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg?rnd=0.4781484879517406&g_tk=732560869&jsonpCallback=MusicJsonCallback&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&categoryId=10000000&sortId=5&sin=${offset}&ein=${49 + offset}`;
-  const response = await request.get(targetUrl);
-  let { data } = response;
+  let data = await request.get(targetUrl);
   data = data.slice("MusicJsonCallback(".length, -")".length);
   data = JSON.parse(data);
 
@@ -63,12 +62,13 @@ const getQQPlayList = async (ctx) => {
   return playList;
 };
 
-const KuwoPlayList = (ctx) => {
+const getKuWoPlayList = async (ctx) => {
   const { offset = 0 } = ctx.query;
   const targetUrl = `http://www.kuwo.cn/www/categoryNew/getPlayListInfoUnderCategory?type=taglist&digest=10000&id=37&start=${offset}&count=50`;
-  const response = request.get(targetUrl);
-  const { data = [] } = response.data;
-  const playList = data[0]?.data?.map((item) => ({
+  let data = await request.get(targetUrl);
+  data = JSON.parse(data);
+  console.log(data.data[0].data);
+  const playList = data?.data[0]?.data.map((item) => ({
     coverImageUrl: item.img,
     title: item.name,
     id: `kwplaylist_${item.id}`,
@@ -77,10 +77,41 @@ const KuwoPlayList = (ctx) => {
   return playList;
 };
 
+const getKuGouPlayList = async (ctx) => {
+  const { offset = 0 } = ctx.query;
+  const targetUrl = `${"http://m.kugou.com/plist/index"
+  + "&json=true&page="}${offset}`;
+  let data = await request.get(targetUrl);
+  data = JSON.parse(data);
+
+  const playList = data.plist.list.info.map((item) => ({
+    coverImageUrl: item.imgurl ? item.imgurl.replace("{size}", "400") : "",
+    title: item.specialname,
+    id: `kgplaylist_${item.specialid}`,
+    source_url: "http://www.kugou.com/yy/special/single/{size}.html".replace("{size}", item.specialid),
+  }));
+  return playList;
+};
+
+const getBilibiliPlayList = async (ctx) => {
+  const { offset = 0 } = ctx.query;
+  const targetUrl = `https://www.bilibili.com/audio/music-service-c/web/menu/hit?ps=20&pn=${offset}`;
+  let data = await request.get(targetUrl);
+  data = JSON.parse(data);
+
+  const playList = data.data.data.map((item) => ({
+    coverImageUrl: item.cover,
+    title: item.title,
+    id: `biplaylist_${item.menuId}`,
+    source_url: `https://www.bilibili.com/audio/am${item.menuId}`,
+  }));
+  return playList;
+};
+
 
 module.exports = async (ctx, next) => {
   try {
-    const playList = await KuwoPlayList(ctx);
+    const playList = await getNeteasePlayList(ctx);
 
     ctx.body = {
       status: 200,

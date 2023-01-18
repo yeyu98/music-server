@@ -1,3 +1,11 @@
+/*
+ * @Author: lzy-Jerry
+ * @Date: 2023-01-05 22:42:33
+ * @LastEditors: lzy-Jerry
+ * @LastEditTime: 2023-01-18 11:23:06
+ * @FilePath: \music\music-server\src\utils\hackHeader.js
+ * @Description:
+ */
 const hackHeader = (url) => {
   let isReplaceOrigin = true; // 是否替换origin
   let isAddOrigin = true; // 是否添加origin
@@ -40,6 +48,7 @@ const hackHeader = (url) => {
     if (url.indexOf(item) !== -1) {
       refererValue = urlMatch[item];
     }
+    // NOTE 就歌单列表查询来说需不需要添加origin以及referer貌似都不太重要...
     if (refererValue === BILIBILI_MUSIC) {
       isReplaceOrigin = false;
       isAddOrigin = false;

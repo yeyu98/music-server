@@ -33,13 +33,17 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 }, (error) => Promise.reject(error));
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("response --->>>", response);
+    return response;
+  },
   (error) => Promise.reject(error),
 );
 
 
-request.get = (url, options) => axiosInstance.get(url, options).then((res) => res);
+request.get = (url, options) => axiosInstance.get(url, options).then((res) => res.data);
 
-request.post = (url, data, options) => axiosInstance.post(url, data, options).then((res) => res);
+request.post = (url, data, options) => axiosInstance.post(url, data, options)
+  .then((res) => res.data);
 
 module.exports = request;

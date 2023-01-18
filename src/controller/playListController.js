@@ -2,13 +2,14 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-25 19:46:20
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-18 11:25:46
+ * @LastEditTime: 2023-01-18 12:01:30
  * @FilePath: \music\music-server\src\controller\playListController.js
  * @Description: 歌单列表查询
  */
 const cheerio = require("cheerio");
 const request = require("../utils/request");
 const { getParameterByName } = require("../utils/utils");
+const C = require("../utils/constants");
 
 /**
  * 歌单查询接口
@@ -108,10 +109,19 @@ const getBilibiliPlayList = async (ctx) => {
   return playList;
 };
 
+const registerPlayList = {
+  [C.NETEASE]: getNeteasePlayList,
+  [C.QQ]: getQQPlayList,
+  [C.KUGOU]: getKuGouPlayList,
+  [C.KUWO]: getKuWoPlayList,
+  [C.BILIBILI]: getBilibiliPlayList,
+};
 
 module.exports = async (ctx, next) => {
   try {
-    const playList = await getNeteasePlayList(ctx);
+    const { source = C.NETEASE } = ctx.query;
+    const getPlayList = registerPlayList[source];
+    const playList = await getPlayList(ctx);
 
     ctx.body = {
       status: 200,
@@ -125,6 +135,6 @@ module.exports = async (ctx, next) => {
       status: 500,
       message: "failed",
     };
-    console.log(err);
+    console.log("err --->>>", err);
   }
 };

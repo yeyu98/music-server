@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-25 19:46:20
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-18 12:01:30
+ * @LastEditTime: 2023-01-20 16:11:02
  * @FilePath: \music\music-server\src\controller\playListController.js
  * @Description: 歌单列表查询
  */
@@ -13,7 +13,8 @@ const C = require("../utils/constants");
 
 /**
  * 歌单查询接口
- * 支持查询顺序${order}、分页${offset}、分类${cat}
+ * 支持通用查询分页${offset}
+ * 各平台api支持传入不同的入参查询各种方式后续再梳理
  * 目前所有从接口返回的data都需要通过parse解析，除了网易云..
 */
 
@@ -53,7 +54,7 @@ const getQQPlayList = async (ctx) => {
   data = data.slice("MusicJsonCallback(".length, -")".length);
   data = JSON.parse(data);
 
-  const playList = data.data.list.map((item) => ({
+  const playList = data?.data?.list.map((item) => ({
     coverImageUrl: item.imgurl,
     title: item.dissname,
     id: `qqplaylist_${item.dissid}`,
@@ -68,7 +69,6 @@ const getKuWoPlayList = async (ctx) => {
   const targetUrl = `http://www.kuwo.cn/www/categoryNew/getPlayListInfoUnderCategory?type=taglist&digest=10000&id=37&start=${offset}&count=50`;
   let data = await request.get(targetUrl);
   data = JSON.parse(data);
-  console.log(data.data[0].data);
   const playList = data?.data[0]?.data.map((item) => ({
     coverImageUrl: item.img,
     title: item.name,
@@ -86,6 +86,7 @@ const getKuGouPlayList = async (ctx) => {
   data = JSON.parse(data);
 
   const playList = data.plist.list.info.map((item) => ({
+    // NOTE 酷狗歌单封面存在400 || 240的尺寸需要在{size}中传入
     coverImageUrl: item.imgurl ? item.imgurl.replace("{size}", "400") : "",
     title: item.specialname,
     id: `kgplaylist_${item.specialid}`,

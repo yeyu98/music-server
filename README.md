@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-21 22:30:36
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-22 23:45:41
+ * @LastEditTime: 2023-01-22 23:51:19
  * @FilePath: \music\music-server\README.md
  * @Description: 
 -->
@@ -12,13 +12,13 @@
 
 ### 支持接口
 
-- 歌单列表
+- **歌单列表**
 - ~~网易云歌单列表接口~~
 - ~~qq歌单列表接口~~
 - ~~bilibili歌单列表接口~~
 - ~~酷狗歌单列表接口~~
 - ~~酷我歌单列表接口~~
-- 歌单详情 
+- **歌单详情**
 - ~~网易云歌单详情接口~~
 - ~~网易云专辑接口~~
 - ~~网易云歌手歌单接口~~
@@ -38,7 +38,18 @@
 - bilibili歌单详情接口
 - bilibili专辑接口
 - bilibili歌手歌单接口
-
+- **歌词**
+- 网易云歌词接口
+- qq歌词接口
+- bilibili歌词接口
+- 酷狗歌词接口
+- 酷我歌词接口
+- **bootstrap**
+- 网易云bootstrap接口
+- qq bootstrap接口
+- bilibili bootstrap接口
+- 酷狗bootstrap接口
+- 酷我bootstrap接口
 
 # 接口梳理
 

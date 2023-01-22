@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-25 19:46:30
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-22 22:57:46
+ * @LastEditTime: 2023-01-22 23:28:30
  * @FilePath: \music\music-server\src\controller\playListDetailController.js
  * @Description: 歌单详情查询
  */
@@ -13,10 +13,21 @@ const { encryptRequestParams } = require("../utils/utils");
 
 
 const isPlayable = (songInfo) => ((songInfo.status >= 0) && (songInfo.fee !== 4));
-const jointArtistName = (artists) => _map(artists, (artist) => (artist.name)).join("/");
+/**
+ * @description: 歌手名拼接
+ * @param {*} artists
+ * @param {*} artist
+ * @return {*}
+ */
+const jointArtistName = (artists) => {
+  if (artists?.length === 0) return "";
+  if (artists?.length === 1) return artists[0].name;
+  return _map(artists, (artist) => (artist.name)).join("/");
+};
 
 /**
  * NOTE 请求返回的数据需要parse一下
+ * TODO 获取歌手名字时有可能存在数组第一个是歌曲名第二个开始才是歌手名
  * @description: 网易云获取歌单详情api
  * @param {*} id
  * @return {*}
@@ -46,6 +57,7 @@ const getNeteasePlayListDetail = async (playListId) => {
     source_url: `http://music.163.com/#/playlist?id=${playListId}`,
   };
 
+
   const playList = _map(playListData?.tracks, (item) => ({
     id: `netrack_${item.id}`,
     title: item.name,
@@ -66,7 +78,7 @@ const getNeteasePlayListDetail = async (playListId) => {
 };
 
 /**
- * TODO 某些专辑里面可能含有vip音乐此时会返回提示绑定手机后续需要处理一下这个error
+ * TODO 有时候请求专辑时会获取失败提示绑定手机号啥的，这个请求时会偶现得看看原因是啥
  * NOTE 返回的data依然需要parse
  * @description: 获取网易云歌手专辑
  * @param {*} albumId
@@ -90,7 +102,7 @@ const getNeteaseAlbum = async (albumId) => {
   const album = _map(albumData?.songs, (songInfo) => ({
     id: `netrack_${songInfo.id}`,
     title: songInfo.name,
-    artist: songInfo.artists[0].name,
+    artist: jointArtistName(songInfo.artists),
     artistId: `neartist_${songInfo.artists[0].id}`,
     album: songInfo.album.name,
     albumId: `nealbum_${songInfo.album.id}`,
@@ -131,9 +143,7 @@ const getNeteaseArtist = async (artistId) => {
   const artist = _map(data?.hotSongs, (songInfo) => ({
     id: `netrack_${songInfo.id}`,
     title: songInfo.name,
-    artist: songInfo.artists.length > 1
-      ? jointArtistName(songInfo.artists)
-      : songInfo.artists[0].name,
+    artist: jointArtistName(songInfo.artists),
     artist_id: `neartist_${songInfo.artists[0].id}`,
     album: songInfo.album.name,
     album_id: `nealbum_${songInfo.album.id}`,

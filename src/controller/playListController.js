@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2022-12-25 19:46:20
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-20 16:11:02
+ * @LastEditTime: 2023-01-22 23:21:28
  * @FilePath: \music\music-server\src\controller\playListController.js
  * @Description: 歌单列表查询
  */
@@ -18,6 +18,12 @@ const C = require("../utils/constants");
  * 目前所有从接口返回的data都需要通过parse解析，除了网易云..
 */
 
+/**
+ * NOTE 不知道这里请求之后会不会提示绑定手机之类的
+ * @description: 获取网易云歌单列表
+ * @param {*} ctx
+ * @return {*}
+ */
 const getNeteasePlayList = async (ctx) => {
   const { offset, order = "hot", cat = "" } = ctx.query;
   const baseUrl = `http://music.163.com/discover/playlist/?order=${order}&cat=${cat}`;

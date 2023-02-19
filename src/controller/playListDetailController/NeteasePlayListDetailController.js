@@ -1,16 +1,9 @@
-/*
- * @Author: lzy-Jerry
- * @Date: 2022-12-25 19:46:30
- * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-01-22 23:28:30
- * @FilePath: \music\music-server\src\controller\playListDetailController.js
- * @Description: 歌单详情查询
- */
 
 const _map = require("lodash/map");
-const request = require("../utils/request");
-const { encryptRequestParams } = require("../utils/utils");
+const request = require("../../utils/request");
+const { encryptRequestParams } = require("../../utils/utils");
 
+/** ******** 网易云音乐 ************ */
 
 const isPlayable = (songInfo) => ((songInfo.status >= 0) && (songInfo.fee !== 4));
 /**
@@ -24,6 +17,7 @@ const jointArtistName = (artists) => {
   if (artists?.length === 1) return artists[0].name;
   return _map(artists, (artist) => (artist.name)).join("/");
 };
+
 
 /**
  * NOTE 请求返回的数据需要parse一下
@@ -160,33 +154,9 @@ const getNeteaseArtist = async (artistId) => {
   };
 };
 
-const musicTypeMap = {
-  neplaylist: getNeteasePlayListDetail,
-  nealbum: getNeteaseAlbum,
-  neartist: getNeteaseArtist,
+
+module.exports = {
+  getNeteasePlayListDetail,
+  getNeteaseAlbum,
+  getNeteaseArtist,
 };
-
-module.exports = async (ctx, next) => {
-  try {
-    const { listId = "" } = ctx.query;
-    const [type, id] = listId.split("_");
-    const getPlayListDetail = musicTypeMap[type];
-
-    const playListDetail = await getPlayListDetail(id);
-
-    ctx.body = {
-      status: 200,
-      message: "success",
-      data: playListDetail,
-    };
-
-    next();
-  } catch (err) {
-    ctx.body = {
-      status: 500,
-      message: "failed",
-    };
-    console.log("err --->>>", err);
-  }
-};
-

@@ -2,7 +2,7 @@
  * @Author: lzy-Jerry
  * @Date: 2023-02-19 21:30:13
  * @LastEditors: lzy-Jerry
- * @LastEditTime: 2023-02-19 22:32:18
+ * @LastEditTime: 2023-02-20 20:09:30
  * @Description:
  */
 
@@ -101,6 +101,8 @@ const getQQAlbum = async (albumId) => {
     albumInfo,
   };
 };
+
+// TODO 接口失效
 const getQQArtist = async (artistId) => {
   const targetUrl = `${"http://i.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg"
   + "?platform=h5page&order=listen&begin=0&num=50&singermid="}${artistId}`
@@ -109,11 +111,7 @@ const getQQArtist = async (artistId) => {
   + "h5&needNewCode=1&from=h5&_=1459960621777&"
   + "jsonpCallback=ssonglist1459960621772";
 
-  console.log(targetUrl);
-
   let data = await request.get(targetUrl);
-
-  console.log(data);
   data = data.slice(" ssonglist1459960621772(".length, -")".length);
   data = JSON.parse(data);
 
